@@ -7,7 +7,11 @@ class Dict:
     def __init__(self):
         self.word = ""
         self.temp = ""
-        self.e2 = ""
+        self.mean = ""
+        self.e2 = tk.Entry(root)
+        self.label3 = tk.Label(root)
+        self.button3 = tk.Button(root)
+        self.label4 = tk.Label(root)
     def meaning(self,k):
         if k in data.keys():
             return data[k]
@@ -18,35 +22,54 @@ class Dict:
         elif k.upper() in data.keys():
             return data[k.upper()]
         elif len(dl.get_close_matches(k.lower(), data.keys(), cutoff = 0.8)) > 0:
-            tk.Label(root, justify=tk.LEFT, text = "Did you mean %s? If yes, enter 'Y' or else enter anything." % (dl.get_close_matches(k.lower(), data.keys(), cutoff = 0.8)[0])).pack()
+            self.label3 = tk.Label(root, justify=tk.LEFT, text = "Did you mean %s? If yes, enter 'Y' or else enter anything." % (dl.get_close_matches(k.lower(), data.keys(), cutoff = 0.8)[0]))
+            self.label3.pack()
             self.temp = dl.get_close_matches(k.lower(), data.keys(), cutoff = 0.8)[0]
             self.e2 = tk.Entry(root)
             self.e2.pack()
-            tk.Button(root, text='OK', command=self.choiceButton, width=15).pack()
+            self.button3 = tk.Button(root, text='OK', command=self.choiceButton, width=15)
+            self.button3.pack()
         else:
             return ("Word Not found. Try Again.")
 
     def choiceButton(self):
         choice = self.e2.get().lower()
         if(choice == 'y'):
-            mean = self.meaning(dl.get_close_matches(self.temp, data.keys(), cutoff = 0.8)[0])
-            self.display(mean)
+            self.mean = self.meaning(dl.get_close_matches(self.temp, data.keys(), cutoff = 0.8)[0])
+            self.display()
         else:
             self.display("Word Not found. Try Again.")
 
     def find(self):
+        checkl = self.label4
+        checkb = self.button3
+        if checkb in root.winfo_children():
+            self.e2.destroy()
+            self.label3.destroy()
+            self.button3.destroy()
+            if(type(self.mean) == list):
+                for m1 in self.mean:
+                    self.label4.destroy()
+            else:
+                self.label4.destroy()
+        elif checkl in root.winfo_children():
+            if(type(self.mean) == list):
+                for m1 in self.mean:
+                    self.label4.destroy()
+            else:
+                self.label4.destroy()
         self.word = e1.get()
-        mean = self.meaning(self.word)
-        self.display(mean)
+        self.mean = self.meaning(self.word)
+        self.display()
 
-    def display(self,m):
-        if(type(m) == list):
-            i = 0;
-            for m1 in m:
-                tk.Label(root, justify=tk.LEFT, text = m1).pack()
-                i+=1
+    def display(self):
+        if(type(self.mean) == list):
+            for m1 in self.mean:
+                self.label4 = tk.Label(root, justify=tk.LEFT, text = m1)
+                self.label4.pack()
         else:
-            tk.Label(root, justify=tk.LEFT, text = m).pack()
+            self.label4 = tk.Label(root, justify=tk.LEFT, text = self.mean)
+            self.label4.pack()
 
 root = tk.Tk()
 root.title("Dictionary")
@@ -63,5 +86,4 @@ e1.pack()
 
 tk.Button(root, text='Find', command=d1.find, width=15).pack()
 tk.Button(root, text='Quit', command=root.destroy, width=15).pack()
-
 
