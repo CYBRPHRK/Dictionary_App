@@ -8,6 +8,7 @@ class Dict:
         self.word = ""
         self.temp = ""
         self.mean = ""
+        self.checkl = []
         self.e2 = tk.Entry(root)
         self.label3 = tk.Label(root)
         self.button3 = tk.Button(root)
@@ -41,21 +42,24 @@ class Dict:
             self.display("Word Not found. Try Again.")
 
     def find(self):
-        checkl = self.label4
         checkb = self.button3
         if checkb in root.winfo_children():
             self.e2.destroy()
             self.label3.destroy()
             self.button3.destroy()
             if(type(self.mean) == list):
-                for m1 in self.mean:
-                    self.label4.destroy()
+                i=0
+                for m in self.mean:
+                    self.checkl[i].destroy()
+                    i+=1
             else:
                 self.label4.destroy()
-        elif checkl in root.winfo_children():
+        elif self.label4 in root.winfo_children():
             if(type(self.mean) == list):
-                for m1 in self.mean:
-                    self.label4.destroy()
+                i=0
+                for m in self.mean:
+                    self.checkl[i].destroy()
+                    i+=1
             else:
                 self.label4.destroy()
         self.word = e1.get()
@@ -64,9 +68,13 @@ class Dict:
 
     def display(self):
         if(type(self.mean) == list):
+            self.checkl = []
+            i=0
             for m1 in self.mean:
                 self.label4 = tk.Label(root, justify=tk.LEFT, text = m1)
-                self.label4.pack()
+                self.checkl.append(self.label4)
+                self.checkl[i].pack()
+                i+=1
         else:
             self.label4 = tk.Label(root, justify=tk.LEFT, text = self.mean)
             self.label4.pack()
